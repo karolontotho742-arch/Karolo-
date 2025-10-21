@@ -1,0 +1,199 @@
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+    min-height: 100vh; 
+    padding: 20px; 
+}
+
+.container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    background: white; 
+    border-radius: 15px; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+    overflow: hidden; 
+}
+
+.header { 
+    background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); 
+    color: white; 
+    padding: 30px; 
+    text-align: center; 
+}
+
+.header h1 { 
+    font-size: 2.5em; 
+    margin-bottom: 10px; 
+}
+
+.header .subtitle { 
+    font-size: 1.2em; 
+    opacity: 0.9; 
+}
+
+.content { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 30px; 
+    padding: 30px; 
+}
+
+.panel { 
+    background: #f8f9fa; 
+    border-radius: 10px; 
+    padding: 25px; 
+    border: 1px solid #e9ecef; 
+}
+
+.panel h2 { 
+    color: #2c3e50; 
+    margin-bottom: 20px; 
+    font-size: 1.5em; 
+    border-bottom: 2px solid #3498db; 
+    padding-bottom: 10px; 
+}
+
+.form-group { 
+    margin-bottom: 20px; 
+}
+
+.form-group label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600; 
+    color: #495057; 
+}
+
+.form-control { 
+    width: 100%; 
+    padding: 12px 15px; 
+    border: 2px solid #e9ecef; 
+    border-radius: 8px; 
+    font-size: 14px; 
+    transition: border-color 0.3s ease; 
+}
+
+.form-control:focus { 
+    outline: none; 
+    border-color: #3498db; 
+}
+
+.btn { 
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
+    color: white; 
+    border: none; 
+    padding: 15px 30px; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    width: 100%; 
+    margin-top: 10px; 
+}
+
+.btn:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); 
+}
+
+.btn-stop { 
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); 
+}
+
+.btn-stop:hover { 
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4); 
+}
+
+.status-indicator { 
+    display: inline-block; 
+    width: 12px; 
+    height: 12px; 
+    border-radius: 50%; 
+    margin-right: 8px; 
+}
+
+.status-connected { 
+    background: #27ae60; 
+}
+
+.status-disconnected { 
+    background: #e74c3c; 
+}
+
+.status-trading { 
+    background: #f39c12; 
+}
+
+.status-item { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 12px; 
+    padding: 10px; 
+    background: white; 
+    border-radius: 6px; 
+    border-left: 4px solid #3498db; 
+}
+
+.status-label { 
+    font-weight: 600; 
+    color: #495057; 
+}
+
+.status-value { 
+    font-weight: 600; 
+    color: #2c3e50; 
+}
+
+.trades-list { 
+    max-height: 300px; 
+    overflow-y: auto; 
+}
+
+.trade-item { 
+    background: white; 
+    margin-bottom: 10px; 
+    padding: 15px; 
+    border-radius: 8px; 
+    border-left: 4px solid #27ae60; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+}
+
+.trade-item.loss { 
+    border-left-color: #e74c3c; 
+}
+
+.trade-symbol { 
+    font-weight: bold; 
+    color: #2c3e50; 
+}
+
+.trade-type { 
+    color: #27ae60; 
+    font-weight: 600; 
+}
+
+.trade-type.SELL { 
+    color: #e74c3c; 
+}
+
+.app-id-info { 
+    background: #e3f2fd; 
+    padding: 10px; 
+    border-radius: 5px; 
+    margin-bottom: 15px; 
+    font-size: 12px; 
+    color: #1976d2; 
+}
+
+@media (max-width: 768px) { 
+    .content { 
+        grid-template-columns: 1fr; 
+    } 
+}

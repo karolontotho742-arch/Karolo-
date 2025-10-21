@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deriv Hybrid Auto-Trading Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Deriv Hybrid Auto-Trading Bot</h1>
+            <div class="subtitle">Advanced Trading • Risk Management • Auto Strategy • Persistent Settings</div>
+        </div>
+        
+        <div class="content">
+            <div class="left-column">
+                <div class="panel">
+                    <h2>Connection Settings</h2>
+                    <form id="connectionForm">
+                        <div class="form-group">
+                            <label for="apiKey">API Key:</label>
+                            <input type="password" id="apiKey" class="form-control" placeholder="Enter your Deriv API key">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountId">Account ID:</label>
+                            <input type="text" id="accountId" class="form-control" placeholder="Enter your Account ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="appId">App ID:</label>
+                            <input type="text" id="appId" class="form-control" value="1089" placeholder="Enter your App ID">
+                            <div class="app-id-info">
+                                Default: 1089 (Deriv Demo). For real account, use your registered App ID.
+                            </div>
+                        </div>
+                        <button type="button" class="btn" onclick="connectBot()">Connect to Deriv</button>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h2>Trading Configuration</h2>
+                    <form id="tradingForm">
+                        <div class="form-group">
+                            <label for="symbol">Market Symbol:</label>
+                            <select id="symbol" class="form-control">
+                                <optgroup label="Volatility Indices">
+                                    <option value="R_10">Volatility 10 Index</option>
+                                    <option value="R_25">Volatility 25 Index</option>
+                                    <option value="R_50">Volatility 50 Index</option>
+                                    <option value="R_75">Volatility 75 Index</option>
+                                    <option value="R_100" selected>Volatility 100 Index</option>
+                                    <option value="R_150">Volatility 150 Index</option>
+                                    <option value="R_200">Volatility 200 Index</option>
+                                </optgroup>
+                                <optgroup label="Boom & Crash">
+                                    <option value="BOOM1000">Boom 1000 Index</option>
+                                    <option value="BOOM500">Boom 500 Index</option>
+                                    <option value="BOOM300">Boom 300 Index</option>
+                                    <option value="CRASH1000">Crash 1000 Index</option>
+                                    <option value="CRASH500">Crash 500 Index</option>
+                                    <option value="CRASH300">Crash 300 Index</option>
+                                </optgroup>
+                                <optgroup label="Forex">
+                                    <option value="frxEURUSD">EUR/USD</option>
+                                    <option value="frxGBPUSD">GBP/USD</option>
+                                    <option value="frxUSDJPY">USD/JPY</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lotSize">Base Lot Size:</label>
+                            <input type="number" id="lotSize" class="form-control" value="0.01" step="0.01" min="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="maxTrades">Max Open Trades:</label>
+                            <input type="number" id="maxTrades" class="form-control" value="10" min="1" max="20">
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="autoLot" checked> Auto Lot Growth</label>
+                        </div>
+                        
+                        <button type="button" class="btn" onclick="startTrading()">Start Trading</button>
+                        <button type="button" class="btn btn-stop" onclick="stopTrading()">Stop Trading</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="panel">
+                    <h2>System Status</h2>
+                    <div id="statusPanel">
+                        <div class="status-item">
+                            <span class="status-label">Connection:</span>
+                            <span class="status-value">
+                                <span id="connectionStatus" class="status-indicator status-disconnected"></span>
+                                <span id="connectionText">Disconnected</span>
+                            </span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Authorization:</span>
+                            <span class="status-value" id="authStatus">Not Authorized</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Trading Status:</span>
+                            <span class="status-value" id="tradingStatus">Stopped</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Account Type:</span>
+                            <span class="status-value" id="accountType">Unknown</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">App ID:</span>
+                            <span class="status-value" id="appIdStatus">Not Set</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Account ID:</span>
+                            <span class="status-value" id="accountIdStatus">Not Set</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Active Trades:</span>
+                            <span class="status-value" id="activeTrades">0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Total Trades:</span>
+                            <span class="status-value" id="totalTrades">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>Active Trades</h2>
+                    <div id="tradesList" class="trades-list">
+                        <div class="trade-item">
+                            <div class="trade-symbol">No active trades</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

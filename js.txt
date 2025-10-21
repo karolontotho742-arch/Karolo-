@@ -1,0 +1,140 @@
+function connectBot() {
+    const apiKey = document.getElementById('apiKey').value;
+    const accountId = document.getElementById('accountId').value;
+    const appId = document.getElementById('appId').value;
+    
+    if (!appId) {
+        alert('Please enter your App ID');
+        return;
+    }
+    
+    fetch('/connect', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            api_key: apiKey, 
+            account_id: accountId,
+            app_id: appId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            updateStatus('connectionStatus', 'connected', 'Connected');
+            updateStatus('authStatus', 'Authorized');
+            updateStatus('appIdStatus', appId);
+            updateStatus('accountIdStatus', accountId);
+        } else {
+            alert('Connection failed: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Connection error occurred');
+    });
+}
+
+function startTrading() {
+    const symbol = document.getElementById('symbol').value;
+    const lotSize = parseFloat(document.getElementById('lotSize').value);
+    const maxTrades = parseInt(document.getElementById('maxTrades').value);
+    const autoLot = document.getElementById('autoLot').checked;
+    
+    fetch('/start_trading', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            symbol: symbol,
+            lot_size: lotSize,
+            max_trades: maxTrades,
+            auto_lot: autoLot
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            updateStatus('tradingStatus', 'trading', 'Trading Active');
+        } else {
+            alert('Failed to start trading: ' + data.message);
+        }
+    });
+}
+
+function stopTrading() {
+    fetch('/stop_trading', {method: 'POST'})
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            updateStatus('tradingStatus', 'stopped', 'Trading Stopped');
+        }
+    });
+}
+
+function updateStatus(elementId, status, text) {
+    const element = document.getElementById(elementId);
+    if (elementId === 'connectionStatus') {
+        const statusElement = document.getElementById('connectionStatus');
+        const textElement = document.getElementById('connectionText');
+        statusElement.className = `status-indicator status-${status}`;
+        textElement.textContent = text;
+    } else {
+        element.textContent = text || status;
+    }
+}
+
+function updateBotStatus() {
+    fetch('/status')
+        .then(response => response.json())
+        .then(data => {
+            updateStatus('connectionStatus', data.connected ? 'connected' : 'disconnected', 
+                        data.connected ? 'Connected' : 'Disconnected');
+            updateStatus('authStatus', data.authorized ? 'Authorized' : 'Not Authorized');
+            updateStatus('tradingStatus', data.trading_enabled ? 'trading' : 'stopped', 
+                        data.trading_enabled ? 'Trading Active' : 'Trading Stopped');
+            updateStatus('accountType', data.account_type || 'Unknown');
+            updateStatus('appIdStatus', data.app_id || 'Not Set');
+            updateStatus('accountIdStatus', data.account_id || 'Not Set');
+            document.getElementById('activeTrades').textContent = data.active_trades || 0;
+            document.getElementById('totalTrades').textContent = data.total_trades || 0;
+
+            const tradesList = document.getElementById('tradesList');
+            tradesList.innerHTML = '';
+
+            if (data.trades && data.trades.length > 0) {
+                data.trades.forEach(trade => {
+                    const item = document.createElement('div');
+                    item.className = 'trade-item ' + (trade.profit < 0 ? 'loss' : '');
+                    item.innerHTML = `
+                        <div class="trade-symbol">${trade.symbol}</div>
+                        <div>Type: <span class="trade-type ${trade.contract_type}">${trade.contract_type}</span></div>
+                        <div>Lot: ${trade.lot_size}</div>
+                        <div>Profit: ${trade.profit ? trade.profit.toFixed(2) : '0.00'}</div>
+                    `;
+                    tradesList.appendChild(item);
+                });
+            } else {
+                tradesList.innerHTML = '<div class="trade-item"><div class="trade-symbol">No active trades</div></div>';
+            }
+        })
+        .catch(error => console.error('Status update error:', error));
+}
+
+// Load saved settings on page load
+window.addEventListener('load', function() {
+    fetch('/load_settings')
+        .then(response => response.json())
+        .then(data => {
+            if (data.api_key) {
+                document.getElementById('apiKey').value = data.api_key;
+            }
+            if (data.account_id) {
+                document.getElementById('accountId').value = data.account_id;
+            }
+            if (data.app_id) {
+                document.getElementById('appId').value = data.app_id;
+            }
+        });
+});
+
+setInterval(updateBotStatus, 3000);
+updateBotStatus();
